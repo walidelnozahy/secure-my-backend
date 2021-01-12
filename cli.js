@@ -1,0 +1,152 @@
+#!/usr/bin/env node
+
+const { yellow, red, green } = require('chalk')
+const isUrl = require('is-url')
+
+const aws = require('aws-sdk')
+
+aws.config.update({ region: 'us-west-1' })
+
+const apigateway = new aws.APIGateway()
+
+const [, , url] = process.argv
+
+const log = (str) => console.log(yellow(str))
+
+const createRestApi = async (name) => {
+  const res = await apigateway
+    .createRestApi({
+      name,
+      endpointConfiguration: {
+        types: ['REGIONAL']
+      }
+    })
+    .promise()
+  return res.id
+}
+const createResource = async ({ restApiId, parentId }) => {
+  const res = await apigateway
+    .createResource({
+      parentId,
+      pathPart: '{proxy+}',
+      restApiId
+    })
+    .promise()
+  return res.id
+}
+const putMethod = async ({ resourceId, restApiId, requestParameters }) => {
+  const res = await apigateway
+    .putMethod({
+      ...({ requestParameters } || {}),
+      authorizationType: 'NONE',
+      httpMethod: 'ANY',
+      resourceId,
+      restApiId
+    })
+    .promise()
+  return res
+}
+const putIntegration = async (props) => {
+  const { resourceId, restApiId, uri, requestParameters } = props
+
+  const params = {
+    httpMethod: 'ANY',
+    integrationHttpMethod: 'ANY',
+    type: 'HTTP_PROXY',
+    resourceId,
+    restApiId,
+    uri,
+    ...({ requestParameters } || {}),
+    passthroughBehavior: 'WHEN_NO_MATCH'
+  }
+
+  //   console.log('params', params)
+  const res = await apigateway.putIntegration(params).promise()
+  return res
+}
+const createDeployment = async ({ restApiId }) => {
+  const res = await apigateway
+    .createDeployment({
+      restApiId
+    })
+    .promise()
+  return res.id
+}
+
+const createStage = async ({ restApiId, deploymentId }) => {
+  const res = await apigateway
+    .createStage({
+      restApiId,
+      deploymentId,
+      stageName: 'dev'
+    })
+    .promise()
+  return res
+}
+
+const secureMyBackend = async () => {
+  log('creating rest api...')
+  const restApiId = await createRestApi(`newApi ${Date.now()}`)
+  const resources = await apigateway
+    .getResources({
+      restApiId
+    })
+    .promise()
+  const parentId = resources.items[0].id
+  log('creating resource...')
+  const resourceId = await createResource({ restApiId, parentId })
+  log('putting mthods and integrations...')
+  await putMethod({
+    restApiId,
+    resourceId,
+    requestParameters: { 'method.request.path.proxy': true }
+  })
+  await putMethod({ restApiId, resourceId: parentId })
+  await putIntegration({
+    restApiId,
+    resourceId,
+    uri: `${url}/{proxy}`,
+    requestParameters: {
+      'integration.request.path.proxy': 'method.request.path.proxy'
+    }
+  })
+
+  await putIntegration({
+    restApiId,
+    resourceId: parentId,
+    uri: url
+    // 'http://52.34.142.67'
+  })
+  log('deploying ...')
+  const deploymentId = await createDeployment({ restApiId })
+  await createStage({ restApiId, deploymentId })
+  console.log(green(`secured url: https://${restApiId}.execute-api.us-west-1.amazonaws.com/dev`))
+}
+
+const handleInputError = () => {
+  if (!url) {
+    console.log(yellow(`please enter a url to secure`))
+  } else {
+    console.log(red(`not a valid url`))
+  }
+  process.exit()
+}
+const handleSecureMyBckend = async () => {
+  try {
+    await secureMyBackend()
+  } catch (e) {
+    if (e.code === 'CredentialsError') {
+      console.log('you need a aws account')
+    } else {
+      throw e
+    }
+    process.exit()
+  }
+}
+
+if (isUrl(url)) {
+  console.log(yellow(`securing your url (${url})`))
+  handleSecureMyBckend()
+} else {
+  handleInputError()
+}

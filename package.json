@@ -1,0 +1,28 @@
+{
+  "name": "@walidelnozahy/secure",
+  "version": "1.0.0",
+  "description": "",
+  "bin": {
+    "secure": "./cli.js"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.817.0",
+    "chalk": "^4.1.0",
+    "is-url": "^1.2.4"
+  },
+  "devDependencies": {
+    "babel-eslint": "9.0.0",
+    "eslint": "5.6.0",
+    "eslint-config-prettier": "^3.6.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "prettier": "^1.15.3"
+  }
+}
