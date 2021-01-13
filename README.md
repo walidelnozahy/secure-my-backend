@@ -1,5 +1,5 @@
 
-![alt text](https://res.cloudinary.com/dqbgnn5hf/image/upload/c_scale,w_150/v1610530093/padlock.svg "secure my backend")
+![alt text](https://res.cloudinary.com/dqbgnn5hf/image/upload/c_scale,w_150/v1610530093/padlock.svg | width=100 "secure my backend")
 
 
 # secure-my-backend
