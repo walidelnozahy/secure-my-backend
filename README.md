@@ -1,4 +1,6 @@
-<img src="https://res.cloudinary.com/dqbgnn5hf/image/upload/c_scale,w_150/v1610530093/padlock.svg" width="200" height="200">
+<p align="center">
+  <img src="https://res.cloudinary.com/dqbgnn5hf/image/upload/c_scale,w_200/v1610530093/padlock.svg" width="200" height="200">
+</p>
 
 
 # secure-my-backend
