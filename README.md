@@ -1,5 +1,4 @@
-
-![](https://res.cloudinary.com/dqbgnn5hf/image/upload/c_scale,w_150/v1610530093/padlock.svg)
+<img src="https://res.cloudinary.com/dqbgnn5hf/image/upload/c_scale,w_150/v1610530093/padlock.svg" width="200" height="200">
 
 
 # secure-my-backend
