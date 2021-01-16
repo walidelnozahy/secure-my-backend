@@ -4,9 +4,7 @@
 
 # Secure your backend with aws
 
-While i was working on a react project recently and had to use an api to fetch data for the application i faced an issue while i was trying to deploy the app on Netlify for testing and feedback, the api endpoint was not secured (https) which caused security issues. I wanted an easy solution to be able to easily secure any endpoint so i created a small cli tool to solve this.
-
-In this blog post i will explain how i wrote the cli tool and show you how to simply use aws’s gateway to secure your endpoints.
+A little package that takes an unsecured url and makes it secure using aws's api gateway.
 
 ## Usage
 
