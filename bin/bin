@@ -110,7 +110,6 @@ const secureMyBackend = async () => {
       'integration.request.path.proxy': 'method.request.path.proxy'
     }
   })
-
   await putIntegration({
     restApiId,
     resourceId: parentId,
