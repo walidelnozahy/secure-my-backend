@@ -1,9 +1,14 @@
-Secure your backend with aws’s api gateway
-While i was working on a react project recently and had to use an api to fetch data for the application i faced an issue while i was trying to deploy the app on Netlify for testing and feedback, the api endpoint was not secured (https) which lead to some CORS problems. I wanted an easy solution to be able to easily secure any endpoint so i created a small cli tool to solve this.
+<p align="center">
+  <img src="https://res.cloudinary.com/dqbgnn5hf/image/upload/c_scale,w_200/v1610530093/padlock.svg" width="200" height="200">
+</p>
+
+# Secure your backend with aws
+
+While i was working on a react project recently and had to use an api to fetch data for the application i faced an issue while i was trying to deploy the app on Netlify for testing and feedback, the api endpoint was not secured (https) which caused security issues. I wanted an easy solution to be able to easily secure any endpoint so i created a small cli tool to solve this.
 
 In this blog post i will explain how i wrote the cli tool and show you how to simply use aws’s gateway to secure your endpoints.
 
-Usage
+## Usage
 
 You need to create an aws account (if you don’t have one already)
 
@@ -15,7 +20,7 @@ then simply just call `secure http://example.com` in your terminal
 
     // https://id.execute-api.us-west-1.amazonaws.com/dev
 
-How it works
+## How it works
 
 Steps needed to secure the endpoint with api gateway are:
 
@@ -30,7 +35,7 @@ Steps needed to secure the endpoint with api gateway are:
     9. Create stage.
 
 so let’s get started. first we will need aws’s sdk
-Install aws-sdk by :
+Install [aws-sdk](https://www.npmjs.com/package/aws-sdk) by :
 
     npm install --save aws-sdk
 
@@ -44,7 +49,7 @@ we will require `aws` and update the region in the config for the desired region
 
     const secureMyBackend = async () => {}
 
-Creating the Rest API
+## Creating the Rest API
 
 first we will need to create a rest api and give it a `name` and `endpointConfiguration` with `types` of ` [``'``REGIONAL``'``] ` and then get it’s id because we will need it later, and then we will get resources for rest api that we just created in order to get the `parentId`.
 
@@ -74,7 +79,7 @@ first we will need to create a rest api and give it a `name` and `endpointConfig
     const parentId = resources.items[0].id
     }
 
-Creating Resources & Methods
+## Creating Resources & Methods
 
 then we need to create resources and methods.
 
@@ -178,7 +183,7 @@ then we need to put two methods, one for the resource we just created and pass `
       await putMethod({ restApiId, resourceId: parentId })
     }
 
-Creating the Proxy Integration
+## Creating the Proxy Integration
 
 we need to put 2 integrations one for `resourceId` and pass `requestParameters` as `'integration.request.path.proxy': 'method.request.path.proxy'` and pass ` uri: 'url/{proxy}``' ` and one for `parentId` and pass the uri
 
@@ -268,7 +273,7 @@ we need to put 2 integrations one for `resourceId` and pass `requestParameters` 
       })
     }
 
-Deploying the API
+## Deploying the API
 
 and finally we need to create deployment and create stage with `deploymentId` and then return the new secured endpoint
 
@@ -361,7 +366,7 @@ and finally we need to create deployment and create stage with `deploymentId` an
       return `secured url: https://${restApiId}.execute-api.us-west-1.amazonaws.com/dev`
     }
 
-Conclusion
+## Conclusion
 
 I hope this short tutorial was helpful. you can find repo of the above example on Github at https://github.com/wellyelnozahy/secure-my-backend
 
