@@ -2,14 +2,22 @@
   <img src="https://res.cloudinary.com/dqbgnn5hf/image/upload/c_scale,w_200/v1610530093/padlock.svg" width="200" height="200">
 </p>
 
-
 # secure-my-backend
+
 A little package that takes an unsecured url and makes it secure using aws's api gateway.
 
+## Usage
+
+please note that an aws account is needed since it's using aws's api gateway
+
+```javascript
+npm install --save @walidelnozahy/secure
+```
+
+then simply just do this:
 
 ```javascript
 secure http://example.com
 
 // https://id.execute-api.us-west-1.amazonaws.com/dev
 ```
-
