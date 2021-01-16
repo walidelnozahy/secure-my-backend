@@ -2,15 +2,12 @@
 
 const { yellow, red, green } = require('chalk')
 const isUrl = require('is-url')
-
 const aws = require('aws-sdk')
 
 aws.config.update({ region: 'us-west-1' })
 
 const apigateway = new aws.APIGateway()
-
 const [, , url] = process.argv
-
 const log = (str) => console.log(yellow(str))
 
 const createRestApi = async (name) => {
@@ -24,6 +21,7 @@ const createRestApi = async (name) => {
     .promise()
   return res.id
 }
+
 const createResource = async ({ restApiId, parentId }) => {
   const res = await apigateway
     .createResource({
@@ -34,6 +32,7 @@ const createResource = async ({ restApiId, parentId }) => {
     .promise()
   return res.id
 }
+
 const putMethod = async ({ resourceId, restApiId, requestParameters }) => {
   const res = await apigateway
     .putMethod({
@@ -46,6 +45,7 @@ const putMethod = async ({ resourceId, restApiId, requestParameters }) => {
     .promise()
   return res
 }
+
 const putIntegration = async (props) => {
   const { resourceId, restApiId, uri, requestParameters } = props
 
@@ -60,10 +60,10 @@ const putIntegration = async (props) => {
     passthroughBehavior: 'WHEN_NO_MATCH'
   }
 
-  //   console.log('params', params)
   const res = await apigateway.putIntegration(params).promise()
   return res
 }
+
 const createDeployment = async ({ restApiId }) => {
   const res = await apigateway
     .createDeployment({
@@ -115,7 +115,6 @@ const secureMyBackend = async () => {
     restApiId,
     resourceId: parentId,
     uri: url
-    // 'http://52.34.142.67'
   })
   log('deploying ...')
   const deploymentId = await createDeployment({ restApiId })
@@ -131,6 +130,7 @@ const handleInputError = () => {
   }
   process.exit()
 }
+
 const handleSecureMyBckend = async () => {
   try {
     await secureMyBackend()

@@ -1,9 +1,9 @@
 {
   "name": "@walidelnozahy/secure",
   "version": "1.0.0",
-  "description": "",
+  "description": "A little package that takes an unsecured url and makes it secure using aws's api gateway.",
   "bin": {
-    "secure": "./cli.js"
+    "secure": "./bin/bin"
   },
   "main": "index.js",
   "scripts": {
